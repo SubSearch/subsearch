@@ -1,3 +1,7 @@
 .ui.container {
   margin-top: 3em;
 }
+
+.ui.input {
+  margin: 8px 0px;
+}
