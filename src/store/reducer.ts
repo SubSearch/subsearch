@@ -8,15 +8,14 @@ const rfdc = RFDC({ proto: true });
 export default function (_state: State = initialState, action: Action) {
   const state = rfdc(_state);
   switch (action.type) {
-    case 'SET_VIDEO_LINK':
-      state.videoLink = action.payload;
+    case 'SET_VIDEO_ID':
+      state.videoID = action.payload;
       state.languages = initialState.languages;
+      state.language = initialState.language;
       state.subtitles = {};
       break;
     case 'SET_LANGUAGES':
       state.languages = action.payload;
-      state.language = initialState.language;
-      state.subtitles = {};
       break;
     case 'SET_LANGUAGE':
       state.language = action.payload;
@@ -24,9 +23,6 @@ export default function (_state: State = initialState, action: Action) {
       break;
     case 'SET_SUBTITLES':
       state.subtitles = action.payload;
-      break;
-    case 'SET_SEARCH_QUERY':
-      state.searchQuery = action.payload;
       break;
   }
   return state;

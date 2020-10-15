@@ -1,4 +1,6 @@
 import { Dispatch } from 'redux';
+
+import videoID from '../util/videoID';
 import { Action } from './types';
 
 const setLanguages = (languages: Record<string, string>): Action => {
@@ -22,26 +24,20 @@ const setSubtitles = (subtitles: Record<string, string>): Action => {
   }
 }
 
-export const setVideoLink = (videoLink: string): Action => {
+const setVideoID = (videoID: string): Action => {
   return {
-    type: 'SET_VIDEO_LINK',
-    payload: videoLink
-  }
-}
-
-export const setSearchQuery = (query: string): Action => {
-  return {
-    type: 'SET_SEARCH_QUERY',
-    payload: query
+    type: 'SET_VIDEO_ID',
+    payload: videoID
   }
 }
 
 let timeout: ReturnType<typeof setTimeout>;
 export const loadLanguages = (videoLink: string) => (dispatch: Dispatch): void => {
   clearTimeout(timeout);
+  const vID = videoID(videoLink);
   timeout = setTimeout(() => {
-    dispatch(setVideoLink(videoLink));
-    if (!videoLink) return;
+    dispatch(setVideoID(vID));
+    if (!vID) return;
     setTimeout(() => {
       dispatch(setLanguages({ 'ru-RU': 'Russian' }));
     }, 1000);
@@ -52,6 +48,6 @@ export const loadSubtitles = (subtitlesLink: string) => (dispatch: Dispatch): vo
   dispatch(setLanguage(subtitlesLink));
   if (!subtitlesLink) return;
   setTimeout(() => {
-    dispatch(setSubtitles({ '00:00': 'Hello, world!', '06:66': 'Good bye, world!' }));
+    dispatch(setSubtitles({ '0': 'Hello, world!', '426': 'Good bye, world!' }));
   }, 1000);
 }

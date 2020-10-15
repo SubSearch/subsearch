@@ -1,11 +1,10 @@
 import { State } from './types';
 
 const initialState: State = {
-  videoLink: '',
+  videoID: '',
   languages: {},
   language: '',
-  subtitles: {},
-  searchQuery: ''
+  subtitles: {}
 };
 
 export default initialState;

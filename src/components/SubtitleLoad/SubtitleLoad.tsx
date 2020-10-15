@@ -40,9 +40,9 @@ function SubtitleLoad() {
   const dispatch = useDispatch();
   const languages = useSelector((state: State) => state.languages);
   const language = useSelector((state: State) => state.language);
-  const videoLink = useSelector((state: State) => state.videoLink);
+  const videoID = useSelector((state: State) => state.videoID);
   const noLanguages = Object.keys(languages).length === 0;
-  const languagesLoading = Boolean(videoLink && noLanguages);
+  const languagesLoading = Boolean(videoID && noLanguages);
   return (
     <Input
       label="YouTube video link"
