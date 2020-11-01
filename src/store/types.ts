@@ -5,7 +5,7 @@ export type Action = {
 
 export type State = {
   videoID: string;
-  languages: Record<string, string>;
+  languages: Map<string, string>;
   language: string;
-  subtitles: Record<number, string>;
+  subtitles: Map<number, string>;
 };

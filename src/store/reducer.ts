@@ -12,14 +12,14 @@ export default function (_state: State = initialState, action: Action) {
       state.videoID = action.payload;
       state.languages = initialState.languages;
       state.language = initialState.language;
-      state.subtitles = {};
+      state.subtitles = initialState.subtitles;
       break;
     case 'SET_LANGUAGES':
       state.languages = action.payload;
       break;
     case 'SET_LANGUAGE':
       state.language = action.payload;
-      state.subtitles = {};
+      state.subtitles = initialState.subtitles;
       break;
     case 'SET_SUBTITLES':
       state.subtitles = action.payload;

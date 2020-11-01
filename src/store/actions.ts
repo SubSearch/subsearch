@@ -1,9 +1,10 @@
 import { Dispatch } from 'redux';
 
 import videoID from '../util/videoID';
+import { getSubtitles, getSubtitleURLs } from '../util/YouTube';
 import { Action } from './types';
 
-const setLanguages = (languages: Record<string, string>): Action => {
+const setLanguages = (languages: Map<string, string>): Action => {
   return {
     type: 'SET_LANGUAGES',
     payload: languages
@@ -17,7 +18,7 @@ const setLanguage = (language: string): Action => {
   }
 }
 
-const setSubtitles = (subtitles: Record<string, string>): Action => {
+const setSubtitles = (subtitles: Map<number, string>): Action => {
   return {
     type: 'SET_SUBTITLES',
     payload: subtitles
@@ -35,19 +36,19 @@ let timeout: ReturnType<typeof setTimeout>;
 export const loadLanguages = (videoLink: string) => (dispatch: Dispatch): void => {
   clearTimeout(timeout);
   const vID = videoID(videoLink);
-  timeout = setTimeout(() => {
+  timeout = setTimeout(async () => {
     dispatch(setVideoID(vID));
     if (!vID) return;
-    setTimeout(() => {
-      dispatch(setLanguages({ 'ru-RU': 'Russian' }));
-    }, 1000);
+      const languages = await getSubtitleURLs(vID);
+      if (!languages) return;
+      dispatch(setLanguages(languages));
   }, 1000);
 }
 
 export const loadSubtitles = (subtitlesLink: string) => (dispatch: Dispatch): void => {
   dispatch(setLanguage(subtitlesLink));
   if (!subtitlesLink) return;
-  setTimeout(() => {
-    dispatch(setSubtitles({ '0': 'Hello, world!', '426': 'Good bye, world!' }));
-  }, 1000);
+  getSubtitles(subtitlesLink).then((subtitles) => {
+    dispatch(setSubtitles(subtitles));
+  })
 }

@@ -2,9 +2,9 @@ import { State } from './types';
 
 const initialState: State = {
   videoID: '',
-  languages: {},
+  languages: new Map<string, string>(),
   language: '',
-  subtitles: {}
+  subtitles: new Map<number, string>()
 };
 
 export default initialState;

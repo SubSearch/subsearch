@@ -7,21 +7,18 @@ import { State } from '../../store/types';
 
 function LanguageDropdown(
   props: PropsWithChildren<{
-    languages: Record<string, string>;
+    languages: Map<string, string>;
     loading?: boolean;
     disabled?: boolean;
     value?: boolean | number | string;
     onChange?: (event: React.SyntheticEvent<HTMLElement>, data: DropdownProps) => void
   }>
 ) {
-  const languages: Array<DropdownItemProps> = [];
-  for (const [code, name] of Object.entries(props.languages || {})) {
-    languages.push({
-      key: code,
-      value: code,
-      text: name,
-    });
-  }
+  const languages: Array<DropdownItemProps> = Array.from(props.languages.entries ? props.languages.entries() : []).map(([baseURL, displayName]) => ({
+    value: baseURL,
+    text: displayName,
+    key: baseURL
+  }));
   return (
     <Dropdown
       search
@@ -41,7 +38,7 @@ function SubtitleLoad() {
   const languages = useSelector((state: State) => state.languages);
   const language = useSelector((state: State) => state.language);
   const videoID = useSelector((state: State) => state.videoID);
-  const noLanguages = Object.keys(languages).length === 0;
+  const noLanguages = languages.size === 0;
   const languagesLoading = Boolean(videoID && noLanguages);
   return (
     <Input
