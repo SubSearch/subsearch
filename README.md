@@ -7,5 +7,4 @@
 There is no way to run it **yet**, but don't worry, you will soon be able to!
 
 ### Do you keep a development log?
-Yes.
-[English version](DEVLOG_EN.md) | [Russian version](DEVLOG_RU.md)
+No. Look at the commit history...
