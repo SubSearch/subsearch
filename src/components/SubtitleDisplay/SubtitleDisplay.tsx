@@ -42,6 +42,7 @@ function SubtitleDisplay() {
                 <Table.Cell>
                   <a
                     href={`https://youtube.com/watch?v=${videoID}&t=${seconds}`}
+					target="_blank"
                   >
                     {timecode}
                   </a>
