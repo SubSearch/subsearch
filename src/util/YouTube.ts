@@ -29,6 +29,7 @@ export async function getSubtitles(
   const result = new Map<number, string>();
   parseSync(data).forEach((node) => {
     if (node.type !== 'cue') return;
+    if (node.data.text.match('<c>')) return;
     const seconds = Math.floor(node.data.start / 1000);
     const text = node.data.text.replace(/(<([^>]+)>)/gi, '');
     result.set(seconds, text);
