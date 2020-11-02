@@ -33,26 +33,32 @@ function SubtitleDisplay() {
         </Table.Header>
 
         <Table.Body>
-          {Array.from(subtitles.entries ? subtitles.entries() : []).map(([seconds, text]) => {
-            if (!text.toLowerCase().includes(searchQuery.toLowerCase()))
-              return null;
-            const timecode = secondsToTimeCode(seconds);
-            return (
-              <Table.Row>
-                <Table.Cell>
-                  <a
-                    href={`https://youtube.com/watch?v=${videoID}&t=${seconds}`}
-					target="_blank"
-                  >
-                    {timecode}
-                  </a>
-                </Table.Cell>
-                <Table.Cell>
-                  <Highlighter textToHighlight={text} searchWords={[searchQuery]} />
-                </Table.Cell>
-              </Table.Row>
-            );
-          })}
+          {Array.from(subtitles.entries ? subtitles.entries() : []).map(
+            ([seconds, text]) => {
+              if (!text.toLowerCase().includes(searchQuery.toLowerCase()))
+                return null;
+              const timecode = secondsToTimeCode(seconds);
+              return (
+                <Table.Row>
+                  <Table.Cell>
+                    <a
+                      href={`https://youtube.com/watch?v=${videoID}&t=${seconds}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {timecode}
+                    </a>
+                  </Table.Cell>
+                  <Table.Cell>
+                    <Highlighter
+                      textToHighlight={text}
+                      searchWords={[searchQuery]}
+                    />
+                  </Table.Cell>
+                </Table.Row>
+              );
+            }
+          )}
         </Table.Body>
       </Table>
     </React.Fragment>

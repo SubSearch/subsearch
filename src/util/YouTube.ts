@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { parseSync } from 'subtitle';
+import { parseSync, Node } from 'subtitle';
 
 export async function getSubtitleURLs(
   videoID: string,
@@ -27,12 +27,14 @@ export async function getSubtitles(
 ): Promise<Map<number, string>> {
   const { data } = await axios.get(subtitlesURL);
   const result = new Map<number, string>();
-  parseSync(data).forEach((node) => {
-    if (node.type !== 'cue') return;
-    if (node.data.text.match('<c>')) return;
-    const seconds = Math.floor(node.data.start / 1000);
+  parseSync(data).reduce((previous: Node, node: Node) => {
+    if (node.type !== 'cue') return node;
+    if (node.data.text.match('<c>')) return node;
+    const start = previous.type === 'cue' ? previous.data.start : node.data.start;
+    const seconds = Math.floor(start / 1000);
     const text = node.data.text.replace(/(<([^>]+)>)/gi, '');
     result.set(seconds, text);
-  });
+    return node;
+  }, { type: 'cue', data: { start: 0, end: 0, text: '' } });
   return result;
 }
