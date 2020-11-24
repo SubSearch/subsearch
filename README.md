@@ -1,6 +1,6 @@
 # SUBSEARCH
 
-[<img src="https://cdn1.savepice.ru/uploads/2020/11/24/40fccf116dd3b99eeb241050222924cd-full.png" width="210" height="40">](https://paypal.me/SubSearch)
+[<img src="https://svgshare.com/i/RkR.svg" width="210" height="40">](https://paypal.me/SubSearch)
 
 
 ### What does the title mean?
