@@ -1,5 +1,7 @@
 # SUBSEARCH
 
+[<img src="https://svgshare.com/i/RkR.svg" width="210" height="40">](https://paypal.me/SubSearch)
+
 ### What does the title mean?
 "SubSearch" is just a combination of the words "Search" and "Subtitle".
 
