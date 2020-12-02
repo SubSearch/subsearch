@@ -1,26 +1,39 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 import { Input, Table } from 'semantic-ui-react';
 import Highlighter from 'react-highlight-words';
 
-import secondsToTimeCode from '../../util/secondsToTimeCode';
-import { State } from '../../store/types';
+import { getSubtitles, Subtitle } from '../../util/YouTube';
 
-function SubtitleDisplay() {
-  const subtitles = useSelector((state: State) => state.subtitles);
-  const videoID = useSelector((state: State) => state.videoID);
-  const language = useSelector((state: State) => state.language);
-  const noSubtitles = subtitles.size === 0;
-  const subtitlesLoading = Boolean(language && noSubtitles);
-  const [searchQuery, setSearchQuery] = useState('');
+function SubtitleDisplay({
+  videoLink,
+  subtitlesLink,
+}: {
+  videoLink?: string;
+  subtitlesLink?: string;
+}) {
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [subtitles, setSubtitles] = useState<Subtitle[]>([]);
+
+  useEffect(() => {
+    (async function () {
+      setSubtitles([]);
+      if (!subtitlesLink) return;
+      setLoading(true);
+      const subtitles = await getSubtitles(subtitlesLink);
+      setLoading(false);
+      setSubtitles(subtitles);
+    })();
+  }, [subtitlesLink]);
+
   return (
     <React.Fragment>
       <Input
         label="Subtitle search query"
         type="text"
+        loading={loading}
         fluid
-        disabled={noSubtitles}
-        loading={subtitlesLoading}
+        disabled={subtitles.length === 0}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
 
@@ -33,32 +46,29 @@ function SubtitleDisplay() {
         </Table.Header>
 
         <Table.Body>
-          {Array.from(subtitles.entries ? subtitles.entries() : []).map(
-            ([seconds, text]) => {
-              if (!text.toLowerCase().includes(searchQuery.toLowerCase()))
-                return null;
-              const timecode = secondsToTimeCode(seconds);
-              return (
-                <Table.Row>
-                  <Table.Cell>
-                    <a
-                      href={`https://youtube.com/watch?v=${videoID}&t=${seconds}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {timecode}
-                    </a>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Highlighter
-                      textToHighlight={text}
-                      searchWords={[searchQuery]}
-                    />
-                  </Table.Cell>
-                </Table.Row>
-              );
-            }
-          )}
+          {subtitles.map(({ seconds, timecode, text }) => {
+            if (!text.toLowerCase().includes(searchQuery.toLowerCase()))
+              return null;
+            return (
+              <Table.Row key={`${seconds}:${text}`}>
+                <Table.Cell>
+                  <a
+                    href={`https://youtube.com/watch?v=${videoLink}&t=${seconds}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {timecode}
+                  </a>
+                </Table.Cell>
+                <Table.Cell>
+                  <Highlighter
+                    textToHighlight={text}
+                    searchWords={[searchQuery]}
+                  />
+                </Table.Cell>
+              </Table.Row>
+            );
+          })}
         </Table.Body>
       </Table>
     </React.Fragment>

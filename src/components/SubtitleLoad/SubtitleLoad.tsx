@@ -1,24 +1,35 @@
-import React, { PropsWithChildren } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Dropdown, Input, DropdownItemProps, DropdownProps } from 'semantic-ui-react';
+import React, {
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
+import {
+  Dropdown,
+  Input,
+  DropdownItemProps,
+  DropdownProps,
+} from 'semantic-ui-react';
 
-import { loadLanguages, loadSubtitles } from '../../store/actions';
-import { State } from '../../store/types';
+import videoID from '../../util/videoID';
+import debounce from '../../util/debounce';
+import { getSubtitleURLs, Language } from '../../util/YouTube';
 
 function LanguageDropdown(
   props: PropsWithChildren<{
-    languages: Map<string, string>;
+    languages: Language[];
     loading?: boolean;
     disabled?: boolean;
     value?: boolean | number | string;
-    onChange?: (event: React.SyntheticEvent<HTMLElement>, data: DropdownProps) => void
+    onChange?: (
+      event: React.SyntheticEvent<HTMLElement>,
+      data: DropdownProps
+    ) => void;
   }>
 ) {
-  const languages: Array<DropdownItemProps> = Array.from(props.languages.entries ? props.languages.entries() : []).map(([baseURL, displayName]) => ({
-    value: baseURL,
-    text: displayName,
-    key: baseURL
-  }));
+  const languages: Array<DropdownItemProps> = props.languages.map(
+    ({ name, url }) => ({ value: url, text: name, key: url })
+  );
   return (
     <Dropdown
       search
@@ -33,26 +44,49 @@ function LanguageDropdown(
   );
 }
 
-function SubtitleLoad() {
-  const dispatch = useDispatch();
-  const languages = useSelector((state: State) => state.languages);
-  const language = useSelector((state: State) => state.language);
-  const videoID = useSelector((state: State) => state.videoID);
-  const noLanguages = languages.size === 0;
-  const languagesLoading = Boolean(videoID && noLanguages);
+function SubtitleLoad({
+  onSelect,
+  onChange,
+}: {
+  onSelect?: (url: string) => void;
+  onChange?: (link: string) => void;
+}) {
+  const [link, setLink] = useState<string>('');
+  const dSetLink = useCallback(debounce(setLink, 500), []);
+  const [languages, setLanguages] = useState<Language[]>([]);
+  const [language, setLanguage] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    (async function () {
+      setLanguages([]);
+      setLanguage('');
+      const id = videoID(link);
+      if (!link || !id) return;
+      setLoading(true);
+      const languages = await getSubtitleURLs(id);
+      setLoading(false);
+      setLanguages(languages ?? []);
+    })();
+    if (typeof onChange === 'function') onChange(link);
+  }, [link, onChange]);
+
+  useEffect(() => {
+    if (typeof onSelect === 'function') onSelect(language);
+  }, [language, onSelect]);
+
   return (
     <Input
       label="YouTube video link"
       type="text"
-      onChange={(e) => dispatch(loadLanguages(e.target.value))}
+      onChange={(_, v) => dSetLink(v.value)}
       fluid
       action={
         <LanguageDropdown
           languages={languages}
-          loading={languagesLoading}
-          disabled={noLanguages}
-          value={language}
-          onChange={(_, v) => dispatch(loadSubtitles(String(v.value)))}
+          loading={loading}
+          disabled={languages.length === 0}
+          onChange={(_, v) => setLanguage(String(v.value ?? ''))}
         />
       }
     />
