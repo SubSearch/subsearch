@@ -70,8 +70,7 @@ export async function getSubtitles(
 export async function getSubtitles(
   subtitlesUrl: string,
   videoUrl?: string
-): Promise<Subtitle[] | YoutubeSubtitle[]>
-{
+): Promise<Subtitle[] | YoutubeSubtitle[]> {
   const subtitles = await getRawSubtitles(subtitlesUrl);
   return parseSubtitles(subtitles, videoUrl as string);
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Input, Table } from 'semantic-ui-react';
-import Highlighter from 'react-highlight-words';
+import Fuse from 'fuse.js';
 
 import { YoutubeSubtitle } from '../../util/getSubtitles';
 import { useSelector } from 'react-redux';
@@ -8,8 +8,10 @@ import { State } from '../../store/types';
 
 function SubtitleDisplay() {
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const subtitles = useSelector<State>((state) => state.subtitles) as YoutubeSubtitle[];
-  
+  const subtitles = useSelector<State>(
+    (state) => state.subtitles
+  ) as YoutubeSubtitle[];
+  const fuse = new Fuse(subtitles, { keys: ['text'] });
 
   return (
     <React.Fragment>
@@ -30,29 +32,20 @@ function SubtitleDisplay() {
         </Table.Header>
 
         <Table.Body>
-          {subtitles.map(({ seconds, timecode, text, url }) => {
-            if (!text.toLowerCase().includes(searchQuery.toLowerCase()))
-              return null;
-            return (
-              <Table.Row key={`${seconds}:${text}`}>
-                <Table.Cell>
-                  <a
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {timecode}
-                  </a>
-                </Table.Cell>
-                <Table.Cell>
-                  <Highlighter
-                    textToHighlight={text}
-                    searchWords={[searchQuery]}
-                  />
-                </Table.Cell>
-              </Table.Row>
-            );
-          })}
+          {fuse
+            .search(searchQuery)
+            .map(({ item: { seconds, timecode, text, url } }) => {
+              return (
+                <Table.Row key={`${seconds}:${text}`}>
+                  <Table.Cell>
+                    <a href={url} target="_blank" rel="noopener noreferrer">
+                      {timecode}
+                    </a>
+                  </Table.Cell>
+                  <Table.Cell>{text}</Table.Cell>
+                </Table.Row>
+              );
+            })}
         </Table.Body>
       </Table>
     </React.Fragment>
