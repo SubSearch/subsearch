@@ -1,4 +1,4 @@
-export default function (seconds: number) {
+export function secondsToTimecode(seconds: number) {
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   const s = Math.round(seconds % 60);
@@ -6,3 +6,5 @@ export default function (seconds: number) {
     .filter(Boolean)
     .join(':');
 }
+
+export default secondsToTimecode;

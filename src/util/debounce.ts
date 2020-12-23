@@ -1,4 +1,4 @@
-export default function debounce<T extends Function>(cb: T, wait = 20) {
+export function debounce<T extends Function>(cb: T, wait = 20) {
   let h: ReturnType<typeof setTimeout>;
   let callable = (...args: unknown[]) => {
     clearTimeout(h);
@@ -6,3 +6,5 @@ export default function debounce<T extends Function>(cb: T, wait = 20) {
   };
   return (callable as unknown) as T;
 }
+
+export default debounce;

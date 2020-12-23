@@ -1,37 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Input, Table } from 'semantic-ui-react';
 import Highlighter from 'react-highlight-words';
 
-import { getSubtitles, Subtitle } from '../../util/YouTube';
+import { YoutubeSubtitle } from '../../util/getSubtitles';
+import { useSelector } from 'react-redux';
+import { State } from '../../store/types';
 
-function SubtitleDisplay({
-  videoLink,
-  subtitlesLink,
-}: {
-  videoLink?: string;
-  subtitlesLink?: string;
-}) {
+function SubtitleDisplay() {
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [subtitles, setSubtitles] = useState<Subtitle[]>([]);
-
-  useEffect(() => {
-    (async function () {
-      setSubtitles([]);
-      if (!subtitlesLink) return;
-      setLoading(true);
-      const subtitles = await getSubtitles(subtitlesLink);
-      setLoading(false);
-      setSubtitles(subtitles);
-    })();
-  }, [subtitlesLink]);
+  const subtitles = useSelector<State>((state) => state.subtitles) as YoutubeSubtitle[];
+  
 
   return (
     <React.Fragment>
       <Input
         label="Subtitle search query"
         type="text"
-        loading={loading}
         fluid
         disabled={subtitles.length === 0}
         onChange={(e) => setSearchQuery(e.target.value)}
@@ -46,14 +30,14 @@ function SubtitleDisplay({
         </Table.Header>
 
         <Table.Body>
-          {subtitles.map(({ seconds, timecode, text }) => {
+          {subtitles.map(({ seconds, timecode, text, url }) => {
             if (!text.toLowerCase().includes(searchQuery.toLowerCase()))
               return null;
             return (
               <Table.Row key={`${seconds}:${text}`}>
                 <Table.Cell>
                   <a
-                    href={`https://youtube.com/watch?v=${videoLink}&t=${seconds}`}
+                    href={url}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

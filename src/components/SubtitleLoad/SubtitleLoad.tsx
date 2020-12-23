@@ -1,3 +1,4 @@
+import { useDispatch } from 'react-redux';
 import React, {
   PropsWithChildren,
   useCallback,
@@ -11,9 +12,9 @@ import {
   DropdownProps,
 } from 'semantic-ui-react';
 
-import videoID from '../../util/videoID';
-import debounce from '../../util/debounce';
-import { getSubtitleURLs, Language } from '../../util/YouTube';
+import { Language } from '../../util/getLanguages';
+import { videoId, debounce, getLanguages } from '../../util';
+import { clearSubtitles, loadSubtitles } from '../../store/actions';
 
 function LanguageDropdown(
   props: PropsWithChildren<{
@@ -44,36 +45,31 @@ function LanguageDropdown(
   );
 }
 
-function SubtitleLoad({
-  onSelect,
-  onChange,
-}: {
-  onSelect?: (url: string) => void;
-  onChange?: (link: string) => void;
-}) {
+function SubtitleLoad() {
   const [link, setLink] = useState<string>('');
   const dSetLink = useCallback(debounce(setLink, 500), []);
   const [languages, setLanguages] = useState<Language[]>([]);
   const [language, setLanguage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     (async function () {
       setLanguages([]);
       setLanguage('');
-      const id = videoID(link);
-      if (!link || !id) return;
+      const id = videoId(link);
+      if (!id) return;
       setLoading(true);
-      const languages = await getSubtitleURLs(id);
+      const languages = await getLanguages(id).catch((v) => []);
       setLoading(false);
       setLanguages(languages ?? []);
     })();
-    if (typeof onChange === 'function') onChange(link);
-  }, [link, onChange]);
+  }, [link, dispatch]);
 
   useEffect(() => {
-    if (typeof onSelect === 'function') onSelect(language);
-  }, [language, onSelect]);
+    dispatch(clearSubtitles());
+    if (language && videoId(link)) dispatch(loadSubtitles(language, link));
+  }, [language, link, dispatch]);
 
   return (
     <Input
