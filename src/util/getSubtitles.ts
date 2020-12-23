@@ -19,7 +19,7 @@ async function getRawSubtitles(subtitlesUrl: string): Promise<string> {
   return data;
 }
 
-function parseYoutubeSubtitles(rawSubtitles: string, videoUrl: string) {
+function parseYoutubeSubtitles(rawSubtitles: string, videoId: string) {
   const result: YoutubeSubtitle[] = [];
   const nodes = parseSync(rawSubtitles);
   let previous: NodeCue | undefined;
@@ -33,7 +33,7 @@ function parseYoutubeSubtitles(rawSubtitles: string, videoUrl: string) {
     const seconds = Math.floor(start / 1000);
     const timecode = secondsToTimecode(seconds);
     const text = node.data.text.replace(/(<([^>]+)>)/gi, '');
-    const url = `https://youtube.com/watch?v=${videoUrl}&t=${seconds}`;
+    const url = `https://youtube.com/watch?v=${videoId}&t=${seconds}`;
     result.push({ seconds, timecode, text, url });
     previous = node;
   }
@@ -65,14 +65,14 @@ export function parseSubtitles(
 export async function getSubtitles(subtitlesUrl: string): Promise<Subtitle[]>;
 export async function getSubtitles(
   subtitlesUrl: string,
-  videoUrl: string
+  videoId: string
 ): Promise<YoutubeSubtitle[]>;
 export async function getSubtitles(
   subtitlesUrl: string,
-  videoUrl?: string
+  videoId?: string
 ): Promise<Subtitle[] | YoutubeSubtitle[]> {
   const subtitles = await getRawSubtitles(subtitlesUrl);
-  return parseSubtitles(subtitles, videoUrl as string);
+  return parseSubtitles(subtitles, videoId as string);
 }
 
 export default getSubtitles;

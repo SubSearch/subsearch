@@ -68,7 +68,8 @@ function SubtitleLoad() {
 
   useEffect(() => {
     dispatch(clearSubtitles());
-    if (language && videoId(link)) dispatch(loadSubtitles(language, link));
+    const id = videoId(link);
+    if (language && id) dispatch(loadSubtitles(language, id));
   }, [language, link, dispatch]);
 
   return (
