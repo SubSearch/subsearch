@@ -3,6 +3,13 @@ import { Dispatch } from 'redux';
 import { Action } from './types';
 import getSubtitles from '../util/getSubtitles';
 
+export function setVideo(video: string): Action {
+  return {
+    type: 'SET_VIDEO',
+    payload: video
+  }
+}
+
 export function loadSubtitles(language: string, link: string) {
   return async (dispatch: Dispatch) => {
     if (!language || !link) return dispatch(clearSubtitles());

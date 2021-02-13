@@ -19,10 +19,8 @@ export interface SubtitleTrack {
 }
 
 async function getVideoInfo(videoId: string): Promise<string> {
-  const url = `https://www.youtube.com/get_video_info?video_id=${videoId}`;
-  const { data } = await axios.get(
-    `https://cors-anywhere.herokuapp.com/${url}`
-  );
+  const url = `http://p3trukh1n.000webhostapp.com/youtube.php?id=${videoId}`;
+  const { data } = await axios.get(url);
   if (!data || typeof data !== 'string')
     throw new Error('Empty or incorrect response');
   return data;

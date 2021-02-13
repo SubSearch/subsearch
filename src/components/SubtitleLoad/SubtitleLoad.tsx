@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import React, {
   PropsWithChildren,
   useCallback,
@@ -14,7 +14,8 @@ import {
 
 import { Language } from '../../util/getLanguages';
 import { videoId, debounce, getLanguages } from '../../util';
-import { clearSubtitles, loadSubtitles } from '../../store/actions';
+import { clearSubtitles, loadSubtitles, setVideo } from '../../store/actions';
+import { State } from '../../store/types';
 
 function LanguageDropdown(
   props: PropsWithChildren<{
@@ -46,7 +47,8 @@ function LanguageDropdown(
 }
 
 function SubtitleLoad() {
-  const [link, setLink] = useState<string>('');
+  const link = useSelector<State>((state) => state.video) as string;
+  const setLink = (link: string) => dispatch(setVideo(link));
   const dSetLink = useCallback(debounce(setLink, 500), []);
   const [languages, setLanguages] = useState<Language[]>([]);
   const [language, setLanguage] = useState<string>('');

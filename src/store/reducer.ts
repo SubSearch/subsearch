@@ -8,6 +8,9 @@ const rfdc = RFDC({ proto: true });
 export function reducer(_state: State = initialState, action: Action) {
   const state = rfdc(_state);
   switch (action.type) {
+    case 'SET_VIDEO':
+      state.video = action.payload;
+      break;
     case 'SET_SUBTITLES':
       state.subtitles = action.payload;
       break;

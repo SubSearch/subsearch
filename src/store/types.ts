@@ -2,6 +2,12 @@ import { YoutubeSubtitle } from '../util/getSubtitles';
 
 export interface State {
   subtitles: YoutubeSubtitle[];
+  video: string;
+}
+
+interface ActionSetVideo {
+  type: 'SET_VIDEO';
+  payload: State['video'];
 }
 
 interface ActionSetSubtitles {
@@ -14,5 +20,8 @@ interface ActionClearSubtitles {
 }
 
 type ActionSubtitles = ActionSetSubtitles | ActionClearSubtitles;
+type ActionVideo = ActionSetVideo;
 
-export type Action = ActionSubtitles;
+export type Action = ActionSubtitles | ActionVideo;
+
+export default Action;
