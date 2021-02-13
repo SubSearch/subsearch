@@ -28,18 +28,20 @@ function SubtitleDisplay() {
         onChange={(e) => setSearchQuery(e.target.value)}
       />
 
-      <YouTube
-        videoId={videoId(video) || ''}
-        opts={{ width: '100%' }}
-        onReady={({ target }) => {
-          setPlayer(target);
-        }}
-        onPlay={({ target }) => {
-          if (!toSeconds) return;
-          target?.seekTo(toSeconds);
-          setToSeconds(0);
-        }}
-      />
+      {subtitles.length === 0 ? null : (
+        <YouTube
+          videoId={videoId(video) || ''}
+          opts={{ width: '100%' }}
+          onReady={({ target }) => {
+            setPlayer(target);
+          }}
+          onPlay={({ target }) => {
+            if (!toSeconds) return;
+            target?.seekTo(toSeconds);
+            setToSeconds(0);
+          }}
+        />
+      )}
 
       <Table celled>
         <Table.Header>
