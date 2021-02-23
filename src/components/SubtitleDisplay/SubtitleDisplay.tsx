@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Container, Input, Table } from 'semantic-ui-react';
+import { Input, Table } from 'semantic-ui-react';
 import YouTube from 'react-youtube';
 import Fuse from 'fuse.js';
 
+import './SubtitleDisplay.css';
 import { YoutubeSubtitle } from '../../util/getSubtitles';
 import { useSelector } from 'react-redux';
 import { State } from '../../store/types';
@@ -17,6 +18,12 @@ function SubtitleDisplay() {
     (state) => state.subtitles
   ) as YoutubeSubtitle[];
   const fuse = new Fuse(subtitles, { keys: ['text'] });
+
+  const jump = (seconds: number) => {
+    player?.pauseVideo();
+    player?.playVideo();
+    setToSeconds(seconds);
+  };
 
   return (
     <React.Fragment>
@@ -46,9 +53,9 @@ function SubtitleDisplay() {
       <Table celled>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell>Link</Table.HeaderCell>
-            <Table.HeaderCell>Timecode</Table.HeaderCell>
-            <Table.HeaderCell>Text</Table.HeaderCell>
+            <Table.HeaderCell width={1}>Link</Table.HeaderCell>
+            <Table.HeaderCell width={1}>Timecode</Table.HeaderCell>
+            <Table.HeaderCell width={16}>Text</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
 
@@ -57,7 +64,7 @@ function SubtitleDisplay() {
             .search(searchQuery)
             .map(({ item: { seconds, timecode, text, url } }) => {
               return (
-                <Table.Row key={`${seconds}:${text}`}>
+                <Table.Row key={`${seconds}:${text}`} onClick={() => jump(seconds)} className="row-hover">
                   <Table.Cell>
                     <a href={url} target="_blank">
                       🔗
@@ -66,11 +73,7 @@ function SubtitleDisplay() {
                   <Table.Cell>
                     <a
                       href="#"
-                      onClick={() => {
-                        player?.pauseVideo();
-                        player?.playVideo();
-                        setToSeconds(seconds);
-                      }}
+                      onClick={() => jump(seconds)}
                     >
                       {timecode}
                     </a>
