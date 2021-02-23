@@ -1,3 +1,4 @@
+import { isMobile } from 'react-device-detect';
 import { useDispatch, useSelector } from 'react-redux';
 import React, {
   PropsWithChildren,
@@ -76,7 +77,7 @@ function SubtitleLoad() {
 
   return (
     <Input
-      label="YouTube video link"
+      label={!isMobile ? "YouTube video link" : undefined}
       type="text"
       onChange={(_, v) => dSetLink(v.value)}
       fluid
