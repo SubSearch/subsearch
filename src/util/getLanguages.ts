@@ -19,7 +19,7 @@ export interface SubtitleTrack {
 }
 
 async function getVideoInfo(videoId: string): Promise<string> {
-  const url = `http://p3trukh1n.000webhostapp.com/youtube.php?id=${videoId}`;
+  const url = `https://p3trukh1n.000webhostapp.com/youtube.php?id=${videoId}`;
   const { data } = await axios.get(url);
   if (!data || typeof data !== 'string')
     throw new Error('Empty or incorrect response');
