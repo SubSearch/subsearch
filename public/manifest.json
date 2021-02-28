@@ -1,19 +1,19 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "SubSearch",
+  "name": "SubSearch — fast and easy way to find right words in YouTube videos",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "img/PNG/favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "img/PNG/logo192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "img/PNG/logo512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
